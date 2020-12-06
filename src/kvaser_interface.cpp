@@ -29,6 +29,8 @@
 #include <utility>
 #include <vector>
 
+#include <iostream>
+
 namespace kvaser_interface
 {
 
@@ -240,6 +242,7 @@ ReturnStatuses KvaserCan::registerReadCallback(std::function<void(void)> callabl
 
     if (stat != canOK) {
       readFunc = nullptr;
+      std::cerr << " \n\n\n ** kvaser interface : registerReadCallback() : canStatus = " << static_cast<int>(stat) << " ** \n\n\n" << std::endl;;
       return ReturnStatuses::CALLBACK_REGISTRATION_FAILED;
     } else {
       return ReturnStatuses::OK;

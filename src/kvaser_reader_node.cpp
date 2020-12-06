@@ -64,7 +64,12 @@ LNI::CallbackReturn KvaserReaderNode::on_configure(const lc::State & state)
   }
 
   frames_pub_ = this->create_publisher<can_msgs::msg::Frame>("can_tx", 500);
-  can_reader_.registerReadCallback(std::bind(&KvaserReaderNode::read, this));
+  auto reg_ret = can_reader_.registerReadCallback(std::bind(&KvaserReaderNode::read, this));
+  if (reg_ret != ReturnStatuses::OK) {
+        RCLCPP_ERROR(this->get_logger(), "Error on registerReadCallback: %d - %s",
+      static_cast<int>(reg_ret), KvaserCanUtils::returnStatusDesc(reg_ret).c_str());
+    return LNI::CallbackReturn::FAILURE;
+  }
 
   return LNI::CallbackReturn::SUCCESS;
 }
@@ -102,6 +107,7 @@ LNI::CallbackReturn KvaserReaderNode::on_shutdown(const lc::State & state)
 
 void KvaserReaderNode::read()
 {
+  RCLCPP_INFO(this->get_logger(), "KvaserReaderNode read() is called.");
   ReturnStatuses ret;
 
   while (true) {
@@ -129,6 +135,7 @@ void KvaserReaderNode::read()
         frames_pub_->publish(std::move(ros_msg));
       }
     } else if (ret == ReturnStatuses::NO_MESSAGES_RECEIVED) {
+      RCLCPP_DEBUG(this->get_logger(), "KvaserReaderNode read() : NO_MESSAGES_RECEIVED. finish.");
       break;
     } else {
       RCLCPP_WARN(this->get_logger(), "Error reading CAN message: %d - %s",
