@@ -37,5 +37,10 @@ def generate_launch_description():
             node_executable='kvaser_can_bridge',
             output='screen',
             node_namespace='',
-            parameters=[params_file]),
+            parameters=[{
+                'hardware_id': 65359,
+                'circuit_id': 0,
+                'bit_rate': 500000,
+                'enable_echo': False,
+            }])
     ])

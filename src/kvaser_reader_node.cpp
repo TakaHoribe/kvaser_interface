@@ -107,7 +107,7 @@ LNI::CallbackReturn KvaserReaderNode::on_shutdown(const lc::State & state)
 
 void KvaserReaderNode::read()
 {
-  RCLCPP_INFO(this->get_logger(), "KvaserReaderNode read() is called.");
+  // RCLCPP_INFO(this->get_logger(), "KvaserReaderNode read() is called.");
   ReturnStatuses ret;
 
   while (true) {
